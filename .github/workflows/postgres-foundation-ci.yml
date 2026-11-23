@@ -1,0 +1,46 @@
+name: Letzmeet PostgreSQL foundation tests
+on:
+  pull_request:
+    paths:
+      - 'migrations/**'
+      - '.github/workflows/postgres-foundation-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  migration-contracts:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-synthetic-only
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create two physically separate disposable test databases
+        run: |
+          docker exec "${{ job.services.postgres.id }}" psql -U postgres -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE letzmeet_core_ci"
+          docker exec "${{ job.services.postgres.id }}" psql -U postgres -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE letzmeet_vault_ci"
+      - name: Apply reviewed Core migration and transactional invariant tests
+        run: |
+          docker exec -i "${{ job.services.postgres.id }}" psql -U postgres -d letzmeet_core_ci -v ON_ERROR_STOP=1 < migrations/core/001_foundation.sql
+          docker exec -i "${{ job.services.postgres.id }}" psql -U postgres -d letzmeet_core_ci -v ON_ERROR_STOP=1 < migrations/tests/core.test.sql
+      - name: Apply isolated Privacy Vault migration and consent/audit tests
+        run: |
+          docker exec -i "${{ job.services.postgres.id }}" psql -U postgres -d letzmeet_vault_ci -v ON_ERROR_STOP=1 < migrations/vault/001_foundation.sql
+          docker exec -i "${{ job.services.postgres.id }}" psql -U postgres -d letzmeet_vault_ci -v ON_ERROR_STOP=1 < migrations/tests/vault.test.sql
+      - name: Assert core DB has no vault health disclosure table
+        run: |
+          count=$(docker exec "${{ job.services.postgres.id }}" psql -U postgres -d letzmeet_core_ci -At -c "SELECT count(*) FROM pg_tables WHERE schemaname='public' AND tablename='health_disclosures'")
+          test "$count" = "0" || (echo "Sensitive Vault tables found in Core database!" && exit 1)
