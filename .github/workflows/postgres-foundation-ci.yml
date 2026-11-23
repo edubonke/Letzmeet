@@ -35,7 +35,9 @@ jobs:
       - name: Apply reviewed Core migration and transactional invariant tests
         run: |
           docker exec -i "${{ job.services.postgres.id }}" psql -U postgres -d letzmeet_core_ci -v ON_ERROR_STOP=1 < migrations/core/001_foundation.sql
+          docker exec -i "${{ job.services.postgres.id }}" psql -U postgres -d letzmeet_core_ci -v ON_ERROR_STOP=1 < migrations/core/002_interaction_guards.sql
           docker exec -i "${{ job.services.postgres.id }}" psql -U postgres -d letzmeet_core_ci -v ON_ERROR_STOP=1 < migrations/tests/core.test.sql
+          docker exec -i "${{ job.services.postgres.id }}" psql -U postgres -d letzmeet_core_ci -v ON_ERROR_STOP=1 < migrations/tests/interaction_guards.test.sql
       - name: Apply isolated Privacy Vault migration and consent/audit tests
         run: |
           docker exec -i "${{ job.services.postgres.id }}" psql -U postgres -d letzmeet_vault_ci -v ON_ERROR_STOP=1 < migrations/vault/001_foundation.sql

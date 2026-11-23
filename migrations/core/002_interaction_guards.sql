@@ -43,6 +43,8 @@ CREATE FUNCTION enforce_photo_grant() RETURNS trigger
 LANGUAGE plpgsql AS $$
 DECLARE photo_owner uuid; photo_status varchar(16);
 BEGIN
+ -- Revocations must always be allowed, including when a block just occurred.
+ IF NEW.revoked_at IS NOT NULL THEN RETURN NEW; END IF;
  SELECT p.user_id,p.moderation_status INTO photo_owner,photo_status
  FROM profile_photos p WHERE p.id=NEW.photo_id FOR SHARE;
  IF photo_owner IS NULL OR photo_owner<>NEW.owner_user_id OR photo_status<>'approved'
