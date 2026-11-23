@@ -6,7 +6,7 @@ export const requiredString = (v, max = 500) => {
   if (typeof v !== 'string' || !v.trim() || v.length > max) throw error(400, 'INVALID_INPUT');
   return v.trim();
 };
-export const validId = v => typeof v === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
+export const validId = v => typeof v === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
 export const assertId = v => { if (!validId(v)) throw error(400, 'INVALID_ID'); return v; };
 export const assertKeys = (o, allowed) => { if (!o || Array.isArray(o) || typeof o !== 'object' || Object.keys(o).some(x => !allowed.includes(x))) throw error(400, 'INVALID_FIELDS'); return o; };
 export const hash = v => createHash('sha256').update(v).digest('hex');
