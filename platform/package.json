@@ -1,0 +1,16 @@
+{
+  "name": "letzmeet-local-integration-platform",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "LOCAL SANDBOX ONLY. NOT APPROVED FOR REAL USERS OR PRODUCTION.",
+  "engines": {
+    "node": ">=22.16.0"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check src/common.mjs && node --check src/store.mjs && node --check src/vault.mjs && node --check src/core.mjs && node --check src/runner.mjs",
+    "start:core": "node src/runner.mjs core",
+    "start:vault": "node src/runner.mjs vault"
+  }
+}
