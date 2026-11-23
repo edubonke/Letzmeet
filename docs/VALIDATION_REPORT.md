@@ -16,12 +16,18 @@ The source was built and tested in the local integration patch (Node 22.16.0, np
 | Internal Vault HMAC replay rejection | PASS (local patch) |
 | Redacted logs and outbox retry on Vault outage | PASS (local patch) |
 
-These results do not prove a production-ready service. The imported GitHub branch has not yet passed GitHub Actions independently; use the Actions status on the PR to establish that evidence.
+## GitHub validation (independently executed)
+
+- Synthetic sandbox workflow: **PASSED** (GitHub Actions run [45184895497](https://github.com/edubonke/Letzmeet/actions/runs/45184895497)), covering syntax and 5/5 HTTP integration tests.
+- PostgreSQL schema workflow: **PASSED** (GitHub Actions run [45184895493](https://github.com/edubonke/Letzmeet/actions/runs/45184895493)), executing Core 001 + 002, Vault 001 and SQL invariant tests in two independent disposable PostgreSQL 16 databases.
+- PostgreSQL tests cover the age-activation database check, blocked-match rules, message participant authorization, blocked-user messaging, approved manual photo grants, block-triggered photo revocation, consent read/revoke and immutable audit triggers.
+- No production databases, service credentials or user data were accessed. These CI results do not constitute an independent security assessment.
+
 
 ## Not run / not completed
 
 - Native Expo Android/iOS build and real two-device scenarios.
-- Approved PostgreSQL/Cognito/Redis/KMS/S3 services or infrastructure.
+- Production NestJS/PostgreSQL database connections, Cognito, Redis, KMS, S3 and infrastructure (SQL schemas validated only).
 - Real merchant or in-app-purchase provider receipt validation.
 - 24/7 moderation, offline safety check-ins, protected photo handling and account deletion.
 - Security penetration testing, external POPIA legal review, load testing, disaster-recovery and backup restoration.

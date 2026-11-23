@@ -9,7 +9,7 @@ Privacy-first adult relationship app for South Africa. This repository contains 
 - `platform/src/core.mjs`: local API: accounts, profiles, discovery, mutual likes, matched messages, blocking, reports, entitlements and signed mock payment events.
 - `platform/src/vault.mjs`: isolated local Privacy Vault service with a distinct test database, consent grants, revocation and audit records.
 - `platform/test/integration.test.mjs`: HTTP integration and negative security tests.
-- `docs/IMPLEMENTATION_STATUS.md`: implementation boundaries, missing features and release blockers.
+- `migrations/core/001_foundation.sql` and `002_interaction_guards.sql`: reviewed PostgreSQL schema, interaction guards and transactional block outbox.\n- `migrations/vault/001_foundation.sql`: separate PostgreSQL Vault schema, consent/audit functions and revocation.\n- `migrations/tests/*.test.sql`: real PostgreSQL database-level tests, run in GitHub Actions.\n- `docs/POSTGRESQL_FOUNDATION.md`: database architecture, CI and remaining hardening.\n- `docs/IMPLEMENTATION_STATUS.md`: implementation boundaries, missing features and release blockers.
 - `docs/VALIDATION_REPORT.md`: what has actually been tested and not tested.
 
 ## Quick start: synthetic test users only

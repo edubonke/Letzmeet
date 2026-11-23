@@ -10,11 +10,11 @@
 | Privacy Vault | Separate loopback service and SQLite database; AES-256-GCM ciphertext; signed internal calls; consent grant, read, revoke, audit records | Local static keys; no AWS KMS |
 | Payments & Logs | HMAC-signed, timestamp-checked, idempotent **synthetic** payment events, entitlement state, allowlisted technical logs | Checkout responds HTTP 501, no real provider |
 | Integration and automated tests | Five real HTTP integration tests against in-memory stores; negative auth, blocked access, consent revocation, signature/replay checks, outbox retry | Unit/integration evidence only, no external audit |
-| Mobile | Preserved original Expo fictional demo, optional `LiveApp.tsx` sandbox API connection | Android/iOS native flows **not yet verified** |
+| Mobile | Preserved original Expo fictional demo, optional `LiveApp.tsx` sandbox API connection | Android/iOS native flows **not yet verified** |\n| PostgreSQL schema foundations | Separate Core and Vault SQL migrations with age activation gate, audit, grant and transaction checks; subsequent interaction guards for messages and private photos | Real PostgreSQL 16 disposable CI databases; no production runtime connected |
 
 ## Non-negotiable production blockers
 
-1. **Do not deploy this sandbox publicly.** Replace or formally approve its tech stack against SPEC-1. Approved production design is Expo RN, NestJS Core API, separately deployed NestJS Privacy Vault, Cognito, PostgreSQL, Kysely migrations, Redis, S3 and AWS Cape Town.
+1. **Do not deploy this sandbox publicly.** The approved production design is Expo RN, NestJS Core API, separately deployed NestJS Privacy Vault, Cognito, PostgreSQL, Kysely migrations, Redis, S3 and AWS Cape Town. **Only PostgreSQL schema foundations have been added; the running sandbox still uses SQLite.**
 2. Real adult age assurance, email OTP/managed sessions, MFA/step-up, abuse controls and identity verification are not integrated.
 3. Production KMS/IAM key separation, key rotation, isolated infrastructure, audit durability, privacy-safe backups and disaster recovery are not integrated.
 4. Moderator portal, P1 24/7 response partner, human case work, appeals, evidence retention and emergency/safety escalation are absent.
@@ -29,7 +29,7 @@ Only use fabricated test records on development devices. No real health status, 
 
 ## Next engineering milestones
 
-- Migrate sandbox domain rules into approved architecture with reviewed PostgreSQL migrations and contract tests.
+- Connect approved NestJS Core/Vault services to reviewed PostgreSQL schemas using Kysely, separate restricted runtime roles, mutual authorization and validated API contracts. Current SQL migrations and database-invariant CI are an initial part of this work.
 - Integrate managed authentication, provider-hosted payment receipts, scoped IAM/KMS and durable event delivery.
 - Implement moderation operations, safety alerts, deletion/retention and translated accessible UI.
 - Complete external POPIA/security reviews and mobile acceptance testing. Do not remove the local-only safeguards until a separate production architecture and risk sign-off exists.

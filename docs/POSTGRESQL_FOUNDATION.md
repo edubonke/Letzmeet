@@ -5,7 +5,7 @@ This milestone creates **database schemas, constraints and CI tests** aligned wi
 ## What exists
 
 - `migrations/core/001_foundation.sql`: Core database with user age-verification gate, profiles, photo grants, blocks, likes, canonical matches, ciphertext-only messages, reports, subscriptions, payment-event deduplication and transactional outbox.
-- `migrations/vault/001_foundation.sql`: **separate database** with disclosure subjects, ciphertext, per-person consent, revocation, audited read function, policy versioning and immutable audit triggers.
+- `migrations/core/002_interaction_guards.sql`: matching, messages and private-photo access guards, including lock-checked message authorization and block-driven photo-grant revocation.\n- `migrations/vault/001_foundation.sql`: **separate database** with disclosure subjects, ciphertext, per-person consent, revocation, audited read function, policy versioning and immutable audit triggers.
 - `migrations/tests/*.test.sql`: real PostgreSQL invariant checks using synthetic UUIDs, grant expiration/revocation and transaction-scoped rollback.
 - `.github/workflows/postgres-foundation-ci.yml`: CI spins up PostgreSQL 16 with isolated disposable core/vault databases and runs SQL tests.
 
@@ -23,7 +23,7 @@ This milestone creates **database schemas, constraints and CI tests** aligned wi
 
 **Audit immutability**: Triggers reject ordinary UPDATE/DELETE operations on audit rows. Database owners and superusers can still disable triggers; immutable offsite storage and tamper-resistant privileged access are pending.
 
-**Migration lifecycle**: Migration 001 is a reviewed first-time migration, not safe automatic schema syncing. Apply new changes using explicitly numbered forward migrations, tested with backups, change plans and rollback/mitigation steps.
+**Migration lifecycle**: Migrations 001 and 002 are reviewed, numbered migrations, not safe automatic schema syncing. Apply new changes using explicitly numbered forward migrations, tested with backups, change plans and rollback/mitigation steps.
 
 ## Local SQL testing (optional PostgreSQL 16 installation)
 
