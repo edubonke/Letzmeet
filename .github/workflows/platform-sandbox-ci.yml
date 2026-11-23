@@ -1,0 +1,22 @@
+name: Letzmeet sandbox contract checks
+on:
+  pull_request:
+    paths:
+      - 'platform/**'
+      - '.github/workflows/platform-sandbox-ci.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Validate syntax and sandbox integration tests
+        working-directory: platform
+        run: |
+          npm run check
+          npm test
